@@ -9,8 +9,8 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
 const PORT = parseInt(process.env.PORT, 10) || 3000;
+const PORT = parseInt(process.env.PORT, 10) || 3000;
 const HOST = process.env.HOST || "0.0.0.0";
-const IS_PROD = process.env.NODE_ENV === "production";
 const JWT_SECRET = process.env.JWT_SECRET || "change-this-secret";
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin123";
 
@@ -262,8 +262,8 @@ if (require.main === module) {
   // Local development: `npm run dev`. In production, run `NODE_ENV=production node server.js`
   // under a process manager such as pm2 or systemd.
   const server = app.listen(PORT, HOST, () =>
-    console.log(`Bus booking app running on http://${HOST}:${PORT} (${IS_PROD ? "production" : "development"})`)
-  );
+  console.log(`Bus booking app running on http://${HOST}:${PORT} (${IS_PROD ? "production" : "development"})`)
+);
 
   // Graceful shutdown so in-flight requests finish when the process manager restarts the app.
   const shutdown = (signal) => {
