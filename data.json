@@ -1,0 +1,32 @@
+{
+  "movies": [
+    {
+      "id": 1,
+      "title": "Inception",
+      "genre": "Sci-Fi",
+      "duration": 148,
+      "price": 12,
+      "poster": "https://image.tmdb.org/t/p/w500/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg",
+      "showtimes": ["10:00 AM", "2:00 PM", "6:00 PM", "9:30 PM"]
+    },
+    {
+      "id": 2,
+      "title": "The Dark Knight",
+      "genre": "Action",
+      "duration": 152,
+      "price": 14,
+      "poster": "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
+      "showtimes": ["11:00 AM", "3:00 PM", "7:00 PM", "10:00 PM"]
+    },
+    {
+      "id": 3,
+      "title": "Interstellar",
+      "genre": "Sci-Fi",
+      "duration": 169,
+      "price": 13,
+      "poster": "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
+      "showtimes": ["9:00 AM", "1:00 PM", "5:00 PM", "9:00 PM"]
+    }
+  ],
+  "bookings": []
+}
