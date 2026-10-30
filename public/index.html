@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Night Coach – Bus Booking</title>
+<style>
+:root{--bg:#eef1f6;--card:#fff;--ink:#14213d;--muted:#5d6b86;--line:#d8deea;--accent:#f2b705;--free:#dfe9f7;--taken:#c5ccd9;--ok:#1f8a5b;--bad:#c0392b}
+@media (prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#0e1626;--card:#16213a;--ink:#eef2fb;--muted:#9aa8c4;--line:#27344f;--free:#25365a;--taken:#3a4560;--ok:#4fd19a;--bad:#ff7b6b}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.45}
+.wrap{max-width:760px;margin:0 auto;padding:20px 16px 60px}
+header{display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+h1{font-size:2rem;font-weight:800;margin:0;letter-spacing:-.02em}
+.sub{color:var(--muted);margin:2px 0 0}
+nav{display:flex;gap:6px;flex-wrap:wrap}
+nav button{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px;border-radius:999px;font:inherit;cursor:pointer}
+nav button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.search,.auth{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:18px}
+.auth{grid-template-columns:1fr;max-width:380px;margin:30px auto}
+.auth h2{margin:0}
+label{display:flex;flex-direction:column;font-size:.8rem;color:var(--muted);gap:4px}
+input,select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 10px;min-width:0}
+.btn{background:var(--accent);color:#14213d;border:0;border-radius:8px;padding:10px 16px;font:inherit;font-weight:600;cursor:pointer;align-self:end}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}
+.btn.danger{background:transparent;border:1px solid var(--bad);color:var(--bad)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.link{background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;font:inherit}
+.bus{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:12px;overflow:hidden}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 16px;flex-wrap:wrap}
+.times{font-size:1.3rem;font-weight:800}
+.times small{font-weight:400;color:var(--muted);font-size:.85rem}
+.meta{color:var(--muted);font-size:.9rem}
+.price{font-size:1.2rem;font-weight:800;text-align:right}
+.left{font-size:.8rem;color:var(--muted)}
+.panel{border-top:1px dashed var(--line);padding:16px;background:var(--bg)}
+.deck{display:inline-block;border:2px solid var(--line);border-radius:22px 22px 12px 12px;padding:14px 12px;background:var(--card)}
+.drv{text-align:right;font-size:.75rem;color:var(--muted);margin:0 6px 8px}
+.seats{display:grid;grid-template-columns:repeat(2,38px) 18px repeat(2,38px);gap:6px}
+.seat{height:34px;border-radius:7px;border:0;background:var(--free);color:var(--ink);font:inherit;font-size:.78rem;cursor:pointer}
+.seat.sel{background:var(--accent);color:#14213d;font-weight:800}
+.seat.x{background:var(--taken);color:var(--muted);cursor:not-allowed;text-decoration:line-through}
+.legend{display:flex;gap:14px;font-size:.8rem;color:var(--muted);margin:10px 0;flex-wrap:wrap}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.pax{display:grid;grid-template-columns:70px 1fr 80px;gap:8px;margin:8px 0;align-items:center}
+.total{display:flex;justify-content:space-between;align-items:center;margin-top:14px;font-weight:800;gap:10px;flex-wrap:wrap}
+.tag{font-size:.75rem;padding:2px 9px;border-radius:999px;border:1px solid var(--ok);color:var(--ok)}
+.tag.c{border-color:var(--bad);color:var(--bad)}
+.empty{text-align:center;color:var(--muted);padding:36px 10px;border:1px dashed var(--line);border-radius:14px}
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;opacity:0;pointer-events:none;transition:opacity .2s}
+#toast.show{opacity:1}
+@media (max-width:600px){.search{grid-template-columns:1fr 1fr}.search .btn{grid-column:1/-1}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div><h1>Night Coach</h1><p class="sub">Pick a route, choose your seats, and go.</p></div>
+    <nav id="nav"></nav>
+  </header>
+  <section id="auth" hidden></section>
+  <section id="book">
+    <div class="search">
+      <label>From<select id="from"></select></label>
+      <label>To<select id="to"></select></label>
+      <label>Travel date<input type="date" id="date"></label>
+      <button class="btn" id="go">Search buses</button>
+    </div>
+    <div id="results"></div>
+  </section>
+  <section id="mine" hidden></section>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt = n => "₹" + Number(n).toLocaleString("en-IN");
+let token = localStorage.getItem("token"), user = JSON.parse(localStorage.getItem("user") || "null");
+let buses = [], open = null, seatMap = [], picked = new Set(), names = {}, ages = {}, authMode = "login";
+
+async function api(path, opts = {}) {
+  const res = await fetch("/api" + path, {
+    method: opts.method || "GET",
+    headers: { "Content-Type": "application/json", ...(token ? { Authorization: "Bearer " + token } : {}) },
+    body: opts.body ? JSON.stringify(opts.body) : undefined,
+  });
+  const data = await res.json().catch(() => ({}));
+  if (res.status === 401 && token) { logout(); }
+  if (!res.ok) { const e = new Error(data.error || "Request failed"); e.status = res.status; throw e; }
+  return data;
+}
+function toast(m) { const t = $("#toast"); t.textContent = m; t.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("show"), 2600); }
+
+function show(view) {
+  for (const v of ["auth", "book", "mine"]) $("#" + v).hidden = v !== view;
+  renderNav(view);
+}
+function renderNav(view) {
+  $("#nav").innerHTML = user
+    ? `<button class="${view === "book" ? "on" : ""}" data-v="book">Book a seat</button>
+       <button class="${view === "mine" ? "on" : ""}" data-v="mine">My bookings</button>
+       <button data-v="out">Log out (${esc(user.name)})</button>`
+    : `<button class="${view === "book" ? "on" : ""}" data-v="book">Book a seat</button>
+       <button class="${view === "auth" ? "on" : ""}" data-v="auth">Log in</button>`;
+  $("#nav").querySelectorAll("button").forEach(b => b.onclick = () => {
+    const v = b.dataset.v;
+    if (v === "out") return logout();
+    if (v === "mine") loadMine();
+    show(v);
+  });
+}
+function logout() { token = null; user = null; localStorage.removeItem("token"); localStorage.removeItem("user"); show("book"); }
+
+function renderAuth() {
+  const reg = authMode === "register";
+  $("#auth").innerHTML = `<div class="auth"><h2>${reg ? "Create account" : "Log in"}</h2>
+    ${reg ? `<label>Name<input id="a-name" autocomplete="name"></label>` : ""}
+    <label>Email<input id="a-email" type="email" autocomplete="email"></label>
+    <label>Password<input id="a-pass" type="password" autocomplete="${reg ? "new-password" : "current-password"}"></label>
+    <button class="btn" id="a-go">${reg ? "Create account" : "Log in"}</button>
+    <button class="link" id="a-sw">${reg ? "I already have an account" : "New here? Create an account"}</button></div>`;
+  $("#a-sw").onclick = () => { authMode = reg ? "login" : "register"; renderAuth(); };
+  $("#a-go").onclick = async () => {
+    try {
+      const body = { email: $("#a-email").value, password: $("#a-pass").value };
+      if (reg) body.name = $("#a-name").value;
+      const r = await api(reg ? "/auth/register" : "/auth/login", { method: "POST", body });
+      token = r.token; user = r.user;
+      localStorage.setItem("token", token); localStorage.setItem("user", JSON.stringify(user));
+      toast("Welcome, " + user.name); show("book");
+    } catch (e) { toast(e.message); }
+  };
+}
+
+async function init() {
+  const d = new Date(); d.setDate(d.getDate() + 1);
+  $("#date").value = d.toISOString().slice(0, 10);
+  $("#date").min = new Date().toISOString().slice(0, 10);
+  try {
+    const all = await api("/buses");
+    const opt = k => [...new Set(all.map(b => b[k]))].sort().map(c => `<option>${esc(c)}</option>`).join("");
+    $("#from").innerHTML = opt("from"); $("#to").innerHTML = opt("to");
+    if (all[0]) { $("#from").value = all[0].from; $("#to").value = all[0].to; }
+  } catch (e) { toast(e.message); }
+  $("#go").onclick = search;
+  renderAuth(); show("book"); search();
+}
+
+async function search() {
+  open = null; picked.clear();
+  const q = new URLSearchParams({ from: $("#from").value, to: $("#to").value, date: $("#date").value });
+  try { buses = await api("/buses?" + q); } catch (e) { toast(e.message); buses = []; }
+  renderResults();
+}
+
+function renderResults() {
+  const box = $("#results");
+  if (!buses.length) { box.innerHTML = `<div class="empty">No buses found for this route. Try another search.</div>`; return; }
+  box.innerHTML = buses.map(b => `<article class="bus"><div class="row">
+    <div><div class="times">${esc(b.departure)} <small>to</small> ${esc(b.arrival)}</div><div class="meta">${esc(b.name)}</div></div>
+    <div><div class="price">${fmt(b.price)}</div><div class="left">${b.availableSeats ?? b.totalSeats} seats left</div></div>
+    <button class="btn ${open === b.id ? "ghost" : ""}" data-bus="${b.id}">${open === b.id ? "Close" : "Select seats"}</button>
+    </div>${open === b.id ? panel(b) : ""}</article>`).join("");
+  box.querySelectorAll("[data-bus]").forEach(el => el.onclick = () => toggleBus(el.dataset.bus));
+  box.querySelectorAll("[data-seat]").forEach(el => el.onclick = () => {
+    const s = +el.dataset.seat;
+    picked.has(s) ? picked.delete(s) : picked.size < 6 ? picked.add(s) : toast("You can book up to 6 seats");
+    renderResults();
+  });
+  box.querySelectorAll("[data-n]").forEach(el => el.oninput = () => names[el.dataset.n] = el.value);
+  box.querySelectorAll("[data-a]").forEach(el => el.oninput = () => ages[el.dataset.a] = el.value);
+  const cb = box.querySelector("#confirm"); if (cb) cb.onclick = confirmBooking;
+}
+
+async function toggleBus(id) {
+  if (open === id) { open = null; renderResults(); return; }
+  open = id; picked.clear(); await loadSeats(); renderResults();
+}
+async function loadSeats() {
+  try { seatMap = (await api(`/buses/${open}/seats?date=${$("#date").value}`)).seats; }
+  catch (e) { toast(e.message); seatMap = []; }
+}
+
+function panel(b) {
+  let cells = "";
+  seatMap.forEach(({ seat, available }) => {
+    const cls = !available ? "x" : picked.has(seat) ? "sel" : "";
+    cells += `<button class="seat ${cls}" data-seat="${seat}" ${available ? "" : "disabled"} aria-pressed="${picked.has(seat)}" aria-label="Seat ${seat}">${seat}</button>`;
+    if (seat % 4 === 2) cells += "<span></span>";
+  });
+  const sel = [...picked].sort((a, c) => a - c);
+  const pax = sel.map(s => `<div class="pax"><span>Seat ${s}</span>
+    <input data-n="${s}" placeholder="Passenger name" value="${esc(names[s] || "")}" aria-label="Passenger name for seat ${s}">
+    <input data-a="${s}" type="number" min="1" max="110" placeholder="Age" value="${esc(ages[s] || "")}" aria-label="Age for seat ${s}"></div>`).join("");
+  return `<div class="panel"><div class="deck"><div class="drv">Driver</div><div class="seats">${cells}</div></div>
+    <div class="legend"><span><i style="background:var(--free)"></i>Available</span><span><i style="background:var(--accent)"></i>Your pick</span><span><i style="background:var(--taken)"></i>Booked</span></div>
+    ${pax || `<p class="meta">Tap a seat to start your booking.</p>`}
+    <div class="total"><span>${sel.length} seat${sel.length === 1 ? "" : "s"}, ${fmt(sel.length * b.price)}</span>
+    <button class="btn" id="confirm" ${sel.length ? "" : "disabled"}>${user ? "Confirm booking" : "Log in to book"}</button></div></div>`;
+}
+
+async function confirmBooking() {
+  if (!user) { authMode = "login"; renderAuth(); show("auth"); toast("Please log in to book"); return; }
+  const sel = [...picked].sort((a, c) => a - c);
+  for (const s of sel) if (!(names[s] || "").trim() || !(+ages[s] > 0)) return toast(`Enter name and age for seat ${s}`);
+  try {
+    await api("/bookings", { method: "POST", body: {
+      busId: open, date: $("#date").value, seats: sel,
+      passengers: sel.map(s => ({ name: names[s].trim(), age: +ages[s] })),
+    }});
+    picked.clear(); names = {}; ages = {}; toast("Booking confirmed");
+    await loadMine(); show("mine"); search();
+  } catch (e) {
+    toast(e.message);
+    if (e.status === 409) { picked.clear(); await loadSeats(); renderResults(); }
+  }
+}
+
+async function loadMine() {
+  const box = $("#mine");
+  try {
+    const list = await api("/bookings");
+    if (!list.length) { box.innerHTML = `<div class="empty">No bookings yet. Search for a bus and pick your seats.</div>`; return; }
+    box.innerHTML = list.map(b => `<article class="bus"><div class="row">
+      <div><div class="times">${esc(b.bus.from)} <small>to</small> ${esc(b.bus.to)}</div>
+      <div class="meta">${esc(b.date)}, departs ${esc(b.bus.departure)}, ${esc(b.bus.name)}</div>
+      <div class="meta">Seats ${b.seats.join(", ")}: ${b.passengers.map(p => esc(p.name) + " (" + esc(p.age) + ")").join(", ")}</div></div>
+      <div><div class="price">${fmt(b.amount)}</div><span class="tag ${b.status === "CANCELLED" ? "c" : ""}">${b.status === "CANCELLED" ? "Cancelled" : "Confirmed"}</span></div>
+      ${b.status === "CONFIRMED" ? `<button class="btn danger" data-cancel="${b.id}">Cancel booking</button>` : ""}</div></article>`).join("");
+    box.querySelectorAll("[data-cancel]").forEach(el => el.onclick = async () => {
+      try { await api("/bookings/" + el.dataset.cancel, { method: "DELETE" }); toast("Booking cancelled"); loadMine(); search(); }
+      catch (e) { toast(e.message); }
+    });
+  } catch (e) { box.innerHTML = `<div class="empty">${esc(e.message)}</div>`; }
+}
+
+init();
+</script>
+</body>
+</html>
