@@ -1,242 +1,308 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Night Coach – Bus Booking</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>🎬 Movie Booking</title>
 <style>
-:root{--bg:#eef1f6;--card:#fff;--ink:#14213d;--muted:#5d6b86;--line:#d8deea;--accent:#f2b705;--free:#dfe9f7;--taken:#c5ccd9;--ok:#1f8a5b;--bad:#c0392b}
-@media (prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#0e1626;--card:#16213a;--ink:#eef2fb;--muted:#9aa8c4;--line:#27344f;--free:#25365a;--taken:#3a4560;--ok:#4fd19a;--bad:#ff7b6b}}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.45}
-.wrap{max-width:760px;margin:0 auto;padding:20px 16px 60px}
-header{display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap;margin-bottom:18px}
-h1{font-size:2rem;font-weight:800;margin:0;letter-spacing:-.02em}
-.sub{color:var(--muted);margin:2px 0 0}
-nav{display:flex;gap:6px;flex-wrap:wrap}
-nav button{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px;border-radius:999px;font:inherit;cursor:pointer}
-nav button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
-.search,.auth{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:18px}
-.auth{grid-template-columns:1fr;max-width:380px;margin:30px auto}
-.auth h2{margin:0}
-label{display:flex;flex-direction:column;font-size:.8rem;color:var(--muted);gap:4px}
-input,select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 10px;min-width:0}
-.btn{background:var(--accent);color:#14213d;border:0;border-radius:8px;padding:10px 16px;font:inherit;font-weight:600;cursor:pointer;align-self:end}
-.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}
-.btn.danger{background:transparent;border:1px solid var(--bad);color:var(--bad)}
-.btn:disabled{opacity:.5;cursor:not-allowed}
-.link{background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;font:inherit}
-.bus{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:12px;overflow:hidden}
-.row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 16px;flex-wrap:wrap}
-.times{font-size:1.3rem;font-weight:800}
-.times small{font-weight:400;color:var(--muted);font-size:.85rem}
-.meta{color:var(--muted);font-size:.9rem}
-.price{font-size:1.2rem;font-weight:800;text-align:right}
-.left{font-size:.8rem;color:var(--muted)}
-.panel{border-top:1px dashed var(--line);padding:16px;background:var(--bg)}
-.deck{display:inline-block;border:2px solid var(--line);border-radius:22px 22px 12px 12px;padding:14px 12px;background:var(--card)}
-.drv{text-align:right;font-size:.75rem;color:var(--muted);margin:0 6px 8px}
-.seats{display:grid;grid-template-columns:repeat(2,38px) 18px repeat(2,38px);gap:6px}
-.seat{height:34px;border-radius:7px;border:0;background:var(--free);color:var(--ink);font:inherit;font-size:.78rem;cursor:pointer}
-.seat.sel{background:var(--accent);color:#14213d;font-weight:800}
-.seat.x{background:var(--taken);color:var(--muted);cursor:not-allowed;text-decoration:line-through}
-.legend{display:flex;gap:14px;font-size:.8rem;color:var(--muted);margin:10px 0;flex-wrap:wrap}
-.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}
-.pax{display:grid;grid-template-columns:70px 1fr 80px;gap:8px;margin:8px 0;align-items:center}
-.total{display:flex;justify-content:space-between;align-items:center;margin-top:14px;font-weight:800;gap:10px;flex-wrap:wrap}
-.tag{font-size:.75rem;padding:2px 9px;border-radius:999px;border:1px solid var(--ok);color:var(--ok)}
-.tag.c{border-color:var(--bad);color:var(--bad)}
-.empty{text-align:center;color:var(--muted);padding:36px 10px;border:1px dashed var(--line);border-radius:14px}
-#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;opacity:0;pointer-events:none;transition:opacity .2s}
-#toast.show{opacity:1}
-@media (max-width:600px){.search{grid-template-columns:1fr 1fr}.search .btn{grid-column:1/-1}}
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: system-ui, sans-serif; }
+  body { background: #0f1117; color: #e6e6e6; min-height: 100vh; }
+
+  header {
+    background: linear-gradient(135deg, #1a1c2c, #2d1b3d);
+    padding: 16px 24px;
+    display: flex; justify-content: space-between; align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,.5);
+  }
+  header h1 { font-size: 22px; cursor: pointer; }
+  header h1 span { color: #ff5c8a; }
+
+  .container { max-width: 1000px; margin: 0 auto; padding: 24px; }
+  h2 { margin-bottom: 16px; font-size: 22px; }
+
+  /* Movies */
+  .movies { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+  .movie {
+    background: #1a1d2b; border-radius: 12px; overflow: hidden; cursor: pointer;
+    transition: transform .2s, box-shadow .2s; border: 1px solid #2a2d3d;
+  }
+  .movie:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(255,92,138,.2); }
+  .movie img { width: 100%; height: 280px; object-fit: cover; }
+  .movie-info { padding: 12px; }
+  .movie-info h3 { font-size: 16px; margin-bottom: 4px; }
+  .movie-info p { font-size: 13px; color: #9aa0b0; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 6px;
+    background: #ff5c8a22; color: #ff5c8a; font-size: 12px; margin-top: 6px; }
+
+  /* Buttons */
+  .btn { padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer;
+    background: #ff5c8a; color: #fff; font-size: 14px; font-weight: 600; }
+  .btn:hover { background: #e04a76; }
+  .btn:disabled { background: #444; cursor: not-allowed; }
+  .back { background: none; border: 1px solid #444; color: #e6e6e6;
+    padding: 8px 16px; border-radius: 8px; cursor: pointer; margin-bottom: 16px; }
+  .back:hover { background: #222; }
+
+  /* Booking view */
+  .movie-header { display: flex; gap: 20px; margin-bottom: 24px; flex-wrap: wrap; }
+  .movie-header img { width: 120px; border-radius: 10px; }
+  .showtimes { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+  .showtime { padding: 8px 14px; border-radius: 8px; border: 1px solid #333;
+    background: #1a1d2b; cursor: pointer; color: #e6e6e6; font-size: 14px; }
+  .showtime.active { background: #ff5c8a; border-color: #ff5c8a; color: #fff; }
+
+  .screen { background: linear-gradient(180deg,#2a2d3d,transparent); height: 36px;
+    margin: 24px auto 12px; max-width: 480px; border-radius: 50% 50% 0 0;
+    text-align: center; color: #9aa0b0; font-size: 11px; padding-top: 6px; letter-spacing: 4px; }
+
+  .seats { display: flex; flex-direction: column; gap: 6px; align-items: center; margin-bottom: 20px; }
+  .row { display: flex; gap: 6px; align-items: center; }
+  .row-label { width: 18px; color: #666; font-size: 12px; }
+  .seat { width: 26px; height: 26px; border-radius: 6px; background: #2a2d3d;
+    cursor: pointer; border: 1px solid #333; transition: background .15s; }
+  .seat:hover:not(.booked) { background: #3a3d5d; }
+  .seat.selected { background: #ff5c8a; border-color: #ff5c8a; }
+  .seat.booked { background: #444; cursor: not-allowed; opacity: .4; }
+  .seat.premium { border-color: #ffb84d; }
+  .seat.premium.selected { background: #ffb84d; }
+
+  .summary { background: #1a1d2b; border-radius: 12px; padding: 20px;
+    max-width: 480px; margin: 0 auto; }
+  .summary h3 { margin-bottom: 12px; }
+  .line { display: flex; justify-content: space-between; padding: 6px 0; font-size: 14px; }
+  .total { border-top: 1px solid #333; margin-top: 8px; padding-top: 12px; font-weight: bold; }
+
+  .form { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+  .form input { padding: 10px; border-radius: 8px; border: 1px solid #333;
+    background: #0f1117; color: #e6e6e6; font-size: 14px; }
+  .form input:focus { outline: none; border-color: #ff5c8a; }
+
+  .confirm { text-align: center; max-width: 480px; margin: 40px auto; }
+  .confirm .check { font-size: 60px; }
+  .confirm h2 { color: #4ade80; margin: 12px 0; }
+  .confirm p { color: #9aa0b0; font-size: 14px; margin-bottom: 6px; }
+  .booking-id { background: #1a1d2b; padding: 12px; border-radius: 8px;
+    font-family: monospace; margin: 16px 0; color: #ff5c8a; word-break: break-all; }
+
+  .lookup input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #333;
+    background: #1a1d2b; color: #e6e6e6; margin-bottom: 10px; }
+  .hidden { display: none !important; }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <div><h1>Night Coach</h1><p class="sub">Pick a route, choose your seats, and go.</p></div>
-    <nav id="nav"></nav>
-  </header>
-  <section id="auth" hidden></section>
-  <section id="book">
-    <div class="search">
-      <label>From<select id="from"></select></label>
-      <label>To<select id="to"></select></label>
-      <label>Travel date<input type="date" id="date"></label>
-      <button class="btn" id="go">Search buses</button>
-    </div>
-    <div id="results"></div>
+
+<header>
+  <h1 onclick="showMovies()">🎬 Cine<span>Book</span></h1>
+  <button class="back" onclick="showLookup()">My Booking</button>
+</header>
+
+<main class="container">
+  <!-- Movies -->
+  <section id="moviesView">
+    <h2>Now Showing</h2>
+    <div class="movies" id="moviesGrid">Loading...</div>
   </section>
-  <section id="mine" hidden></section>
-</div>
-<div id="toast" role="status" aria-live="polite"></div>
+
+  <!-- Booking -->
+  <section id="bookingView" class="hidden">
+    <button class="back" onclick="showMovies()">← Back</button>
+    <div class="movie-header" id="movieHeader"></div>
+    <div class="screen">SCREEN</div>
+    <div class="seats" id="seatsGrid"></div>
+
+    <div class="summary">
+      <h3>Booking Summary</h3>
+      <div class="line"><span>Seats</span><span id="sumSeats">None</span></div>
+      <div class="line"><span>Showtime</span><span id="sumTime">—</span></div>
+      <div class="line total"><span>Total</span><span id="sumTotal">$0</span></div>
+
+      <div class="form" id="form" style="display:none;">
+        <input id="nameInput" placeholder="Your Name *" />
+        <input id="emailInput" type="email" placeholder="Email *" />
+        <button class="btn" onclick="submitBooking()">Confirm Booking</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Confirmation -->
+  <section id="confirmView" class="hidden">
+    <div class="confirm">
+      <div class="check">✅</div>
+      <h2>Booking Confirmed!</h2>
+      <p id="confirmMovie"></p>
+      <p id="confirmSeats"></p>
+      <div class="booking-id" id="confirmId"></div>
+      <button class="btn" onclick="showMovies()">Book Another</button>
+    </div>
+  </section>
+
+  <!-- Lookup -->
+  <section id="lookupView" class="hidden">
+    <button class="back" onclick="showMovies()">← Back</button>
+    <h2>Find My Booking</h2>
+    <div class="lookup">
+      <input id="lookupId" placeholder="Enter booking ID" />
+      <button class="btn" onclick="findBooking()">Search</button>
+      <div id="lookupResult" style="margin-top:16px;"></div>
+    </div>
+  </section>
+</main>
 
 <script>
-const $ = s => document.querySelector(s);
-const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const fmt = n => "₹" + Number(n).toLocaleString("en-IN");
-let token = localStorage.getItem("token"), user = JSON.parse(localStorage.getItem("user") || "null");
-let buses = [], open = null, seatMap = [], picked = new Set(), names = {}, ages = {}, authMode = "login";
+let movies = [];
+let currentMovie = null;
+let currentShowtime = null;
+let selectedSeats = [];
+let currentPrice = 0;
 
-async function api(path, opts = {}) {
-  const res = await fetch("/api" + path, {
-    method: opts.method || "GET",
-    headers: { "Content-Type": "application/json", ...(token ? { Authorization: "Bearer " + token } : {}) },
-    body: opts.body ? JSON.stringify(opts.body) : undefined,
-  });
-  const data = await res.json().catch(() => ({}));
-  if (res.status === 401 && token) { logout(); }
-  if (!res.ok) { const e = new Error(data.error || "Request failed"); e.status = res.status; throw e; }
-  return data;
-}
-function toast(m) { const t = $("#toast"); t.textContent = m; t.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("show"), 2600); }
+const hideAll = () => ["moviesView","bookingView","confirmView","lookupView"]
+  .forEach(id => document.getElementById(id).classList.add("hidden"));
 
-function show(view) {
-  for (const v of ["auth", "book", "mine"]) $("#" + v).hidden = v !== view;
-  renderNav(view);
-}
-function renderNav(view) {
-  $("#nav").innerHTML = user
-    ? `<button class="${view === "book" ? "on" : ""}" data-v="book">Book a seat</button>
-       <button class="${view === "mine" ? "on" : ""}" data-v="mine">My bookings</button>
-       <button data-v="out">Log out (${esc(user.name)})</button>`
-    : `<button class="${view === "book" ? "on" : ""}" data-v="book">Book a seat</button>
-       <button class="${view === "auth" ? "on" : ""}" data-v="auth">Log in</button>`;
-  $("#nav").querySelectorAll("button").forEach(b => b.onclick = () => {
-    const v = b.dataset.v;
-    if (v === "out") return logout();
-    if (v === "mine") loadMine();
-    show(v);
-  });
-}
-function logout() { token = null; user = null; localStorage.removeItem("token"); localStorage.removeItem("user"); show("book"); }
-
-function renderAuth() {
-  const reg = authMode === "register";
-  $("#auth").innerHTML = `<div class="auth"><h2>${reg ? "Create account" : "Log in"}</h2>
-    ${reg ? `<label>Name<input id="a-name" autocomplete="name"></label>` : ""}
-    <label>Email<input id="a-email" type="email" autocomplete="email"></label>
-    <label>Password<input id="a-pass" type="password" autocomplete="${reg ? "new-password" : "current-password"}"></label>
-    <button class="btn" id="a-go">${reg ? "Create account" : "Log in"}</button>
-    <button class="link" id="a-sw">${reg ? "I already have an account" : "New here? Create an account"}</button></div>`;
-  $("#a-sw").onclick = () => { authMode = reg ? "login" : "register"; renderAuth(); };
-  $("#a-go").onclick = async () => {
-    try {
-      const body = { email: $("#a-email").value, password: $("#a-pass").value };
-      if (reg) body.name = $("#a-name").value;
-      const r = await api(reg ? "/auth/register" : "/auth/login", { method: "POST", body });
-      token = r.token; user = r.user;
-      localStorage.setItem("token", token); localStorage.setItem("user", JSON.stringify(user));
-      toast("Welcome, " + user.name); show("book");
-    } catch (e) { toast(e.message); }
-  };
+async function showMovies() {
+  hideAll();
+  document.getElementById("moviesView").classList.remove("hidden");
+  const res = await fetch("/api/movies");
+  movies = await res.json();
+  document.getElementById("moviesGrid").innerHTML = movies.map(m => `
+    <div class="movie" onclick="showBooking(${m.id})">
+      <img src="${m.poster}" onerror="this.src='https://via.placeholder.com/300x450?text=${encodeURIComponent(m.title)}'" />
+      <div class="movie-info">
+        <h3>${m.title}</h3>
+        <p>${m.genre} · ${m.duration} min</p>
+        <span class="badge">$${m.price}</span>
+      </div>
+    </div>
+  `).join("");
 }
 
-async function init() {
-  const d = new Date(); d.setDate(d.getDate() + 1);
-  $("#date").value = d.toISOString().slice(0, 10);
-  $("#date").min = new Date().toISOString().slice(0, 10);
-  try {
-    const all = await api("/buses");
-    const opt = k => [...new Set(all.map(b => b[k]))].sort().map(c => `<option>${esc(c)}</option>`).join("");
-    $("#from").innerHTML = opt("from"); $("#to").innerHTML = opt("to");
-    if (all[0]) { $("#from").value = all[0].from; $("#to").value = all[0].to; }
-  } catch (e) { toast(e.message); }
-  $("#go").onclick = search;
-  renderAuth(); show("book"); search();
+function showBooking(id) {
+  currentMovie = movies.find(m => m.id === id);
+  currentShowtime = null;
+  selectedSeats = [];
+  hideAll();
+  document.getElementById("bookingView").classList.remove("hidden");
+  renderHeader();
+  document.getElementById("seatsGrid").innerHTML = `<p style="color:#9aa0b0;font-size:14px;">Select a showtime.</p>`;
+  updateSummary();
 }
 
-async function search() {
-  open = null; picked.clear();
-  const q = new URLSearchParams({ from: $("#from").value, to: $("#to").value, date: $("#date").value });
-  try { buses = await api("/buses?" + q); } catch (e) { toast(e.message); buses = []; }
-  renderResults();
+function renderHeader() {
+  document.getElementById("movieHeader").innerHTML = `
+    <img src="${currentMovie.poster}" onerror="this.src='https://via.placeholder.com/120x180'" />
+    <div>
+      <h3>${currentMovie.title}</h3>
+      <p style="color:#9aa0b0;font-size:14px;margin-top:6px;">${currentMovie.genre} · ${currentMovie.duration} min · $${currentMovie.price}/seat</p>
+      <p style="margin-top:12px;font-size:14px;">Choose a showtime:</p>
+      <div class="showtimes">
+        ${currentMovie.showtimes.map(t => `
+          <button class="showtime ${t===currentShowtime?'active':''}" onclick="selectShowtime('${t}')">${t}</button>
+        `).join("")}
+      </div>
+    </div>
+  `;
 }
 
-function renderResults() {
-  const box = $("#results");
-  if (!buses.length) { box.innerHTML = `<div class="empty">No buses found for this route. Try another search.</div>`; return; }
-  box.innerHTML = buses.map(b => `<article class="bus"><div class="row">
-    <div><div class="times">${esc(b.departure)} <small>to</small> ${esc(b.arrival)}</div><div class="meta">${esc(b.name)}</div></div>
-    <div><div class="price">${fmt(b.price)}</div><div class="left">${b.availableSeats ?? b.totalSeats} seats left</div></div>
-    <button class="btn ${open === b.id ? "ghost" : ""}" data-bus="${b.id}">${open === b.id ? "Close" : "Select seats"}</button>
-    </div>${open === b.id ? panel(b) : ""}</article>`).join("");
-  box.querySelectorAll("[data-bus]").forEach(el => el.onclick = () => toggleBus(el.dataset.bus));
-  box.querySelectorAll("[data-seat]").forEach(el => el.onclick = () => {
-    const s = +el.dataset.seat;
-    picked.has(s) ? picked.delete(s) : picked.size < 6 ? picked.add(s) : toast("You can book up to 6 seats");
-    renderResults();
-  });
-  box.querySelectorAll("[data-n]").forEach(el => el.oninput = () => names[el.dataset.n] = el.value);
-  box.querySelectorAll("[data-a]").forEach(el => el.oninput = () => ages[el.dataset.a] = el.value);
-  const cb = box.querySelector("#confirm"); if (cb) cb.onclick = confirmBooking;
+async function selectShowtime(t) {
+  currentShowtime = t;
+  selectedSeats = [];
+  renderHeader();
+  await loadSeats();
 }
 
-async function toggleBus(id) {
-  if (open === id) { open = null; renderResults(); return; }
-  open = id; picked.clear(); await loadSeats(); renderResults();
-}
 async function loadSeats() {
-  try { seatMap = (await api(`/buses/${open}/seats?date=${$("#date").value}`)).seats; }
-  catch (e) { toast(e.message); seatMap = []; }
+  const res = await fetch(`/api/movies/${currentMovie.id}/seats?showtime=${encodeURIComponent(currentShowtime)}`);
+  const { seats, price } = await res.json();
+  currentPrice = price;
+
+  const rows = {};
+  seats.forEach(s => (rows[s.row] = rows[s.row] || []).push(s));
+
+  document.getElementById("seatsGrid").innerHTML = Object.keys(rows).map(row => `
+    <div class="row">
+      <span class="row-label">${row}</span>
+      ${rows[row].map(s => `
+        <div class="seat ${s.booked?'booked':''} ${s.premium?'premium':''} ${selectedSeats.includes(s.id)?'selected':''}"
+             onclick="toggleSeat('${s.id}', ${s.booked})" title="${s.id}"></div>
+      `).join("")}
+    </div>
+  `).join("");
+
+  updateSummary();
 }
 
-function panel(b) {
-  let cells = "";
-  seatMap.forEach(({ seat, available }) => {
-    const cls = !available ? "x" : picked.has(seat) ? "sel" : "";
-    cells += `<button class="seat ${cls}" data-seat="${seat}" ${available ? "" : "disabled"} aria-pressed="${picked.has(seat)}" aria-label="Seat ${seat}">${seat}</button>`;
-    if (seat % 4 === 2) cells += "<span></span>";
+function toggleSeat(id, booked) {
+  if (booked) return;
+  if (selectedSeats.includes(id)) selectedSeats = selectedSeats.filter(s => s !== id);
+  else if (selectedSeats.length < 8) selectedSeats.push(id);
+  else return alert("Max 8 seats per booking");
+  loadSeats();
+}
+
+function updateSummary() {
+  document.getElementById("sumSeats").textContent = selectedSeats.length ? selectedSeats.join(", ") : "None";
+  document.getElementById("sumTime").textContent = currentShowtime || "—";
+  document.getElementById("sumTotal").textContent = `$${selectedSeats.length * currentPrice}`;
+  document.getElementById("form").style.display =
+    selectedSeats.length && currentShowtime ? "flex" : "none";
+}
+
+async function submitBooking() {
+  const name = document.getElementById("nameInput").value.trim();
+  const email = document.getElementById("emailInput").value.trim();
+  if (!name) return alert("Enter your name");
+  if (!email) return alert("Enter your email");
+
+  const res = await fetch("/api/bookings", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      movieId: currentMovie.id,
+      showtime: currentShowtime,
+      seats: selectedSeats,
+      name,
+      email,
+    }),
   });
-  const sel = [...picked].sort((a, c) => a - c);
-  const pax = sel.map(s => `<div class="pax"><span>Seat ${s}</span>
-    <input data-n="${s}" placeholder="Passenger name" value="${esc(names[s] || "")}" aria-label="Passenger name for seat ${s}">
-    <input data-a="${s}" type="number" min="1" max="110" placeholder="Age" value="${esc(ages[s] || "")}" aria-label="Age for seat ${s}"></div>`).join("");
-  return `<div class="panel"><div class="deck"><div class="drv">Driver</div><div class="seats">${cells}</div></div>
-    <div class="legend"><span><i style="background:var(--free)"></i>Available</span><span><i style="background:var(--accent)"></i>Your pick</span><span><i style="background:var(--taken)"></i>Booked</span></div>
-    ${pax || `<p class="meta">Tap a seat to start your booking.</p>`}
-    <div class="total"><span>${sel.length} seat${sel.length === 1 ? "" : "s"}, ${fmt(sel.length * b.price)}</span>
-    <button class="btn" id="confirm" ${sel.length ? "" : "disabled"}>${user ? "Confirm booking" : "Log in to book"}</button></div></div>`;
+
+  const data = await res.json();
+  if (!res.ok) return alert(data.error || "Booking failed");
+
+  hideAll();
+  document.getElementById("confirmView").classList.remove("hidden");
+  document.getElementById("confirmMovie").textContent = `${data.movieTitle} — ${data.showtime}`;
+  document.getElementById("confirmSeats").textContent = `Seats: ${data.seats.join(", ")} | Total: $${data.total}`;
+  document.getElementById("confirmId").textContent = data.id;
 }
 
-async function confirmBooking() {
-  if (!user) { authMode = "login"; renderAuth(); show("auth"); toast("Please log in to book"); return; }
-  const sel = [...picked].sort((a, c) => a - c);
-  for (const s of sel) if (!(names[s] || "").trim() || !(+ages[s] > 0)) return toast(`Enter name and age for seat ${s}`);
-  try {
-    await api("/bookings", { method: "POST", body: {
-      busId: open, date: $("#date").value, seats: sel,
-      passengers: sel.map(s => ({ name: names[s].trim(), age: +ages[s] })),
-    }});
-    picked.clear(); names = {}; ages = {}; toast("Booking confirmed");
-    await loadMine(); show("mine"); search();
-  } catch (e) {
-    toast(e.message);
-    if (e.status === 409) { picked.clear(); await loadSeats(); renderResults(); }
-  }
+function showLookup() {
+  hideAll();
+  document.getElementById("lookupView").classList.remove("hidden");
+  document.getElementById("lookupResult").innerHTML = "";
+  document.getElementById("lookupId").value = "";
 }
 
-async function loadMine() {
-  const box = $("#mine");
-  try {
-    const list = await api("/bookings");
-    if (!list.length) { box.innerHTML = `<div class="empty">No bookings yet. Search for a bus and pick your seats.</div>`; return; }
-    box.innerHTML = list.map(b => `<article class="bus"><div class="row">
-      <div><div class="times">${esc(b.bus.from)} <small>to</small> ${esc(b.bus.to)}</div>
-      <div class="meta">${esc(b.date)}, departs ${esc(b.bus.departure)}, ${esc(b.bus.name)}</div>
-      <div class="meta">Seats ${b.seats.join(", ")}: ${b.passengers.map(p => esc(p.name) + " (" + esc(p.age) + ")").join(", ")}</div></div>
-      <div><div class="price">${fmt(b.amount)}</div><span class="tag ${b.status === "CANCELLED" ? "c" : ""}">${b.status === "CANCELLED" ? "Cancelled" : "Confirmed"}</span></div>
-      ${b.status === "CONFIRMED" ? `<button class="btn danger" data-cancel="${b.id}">Cancel booking</button>` : ""}</div></article>`).join("");
-    box.querySelectorAll("[data-cancel]").forEach(el => el.onclick = async () => {
-      try { await api("/bookings/" + el.dataset.cancel, { method: "DELETE" }); toast("Booking cancelled"); loadMine(); search(); }
-      catch (e) { toast(e.message); }
-    });
-  } catch (e) { box.innerHTML = `<div class="empty">${esc(e.message)}</div>`; }
+async function findBooking() {
+  const id = document.getElementById("lookupId").value.trim();
+  const result = document.getElementById("lookupResult");
+  if (!id) return;
+
+  const res = await fetch(`/api/bookings/${encodeURIComponent(id)}`);
+  if (!res.ok) return (result.innerHTML = `<p style="color:#ff6b6b;">Booking not found.</p>`);
+
+  const b = await res.json();
+  result.innerHTML = `
+    <div class="summary">
+      <h3>${b.movieTitle}</h3>
+      <div class="line"><span>Showtime</span><span>${b.showtime}</span></div>
+      <div class="line"><span>Seats</span><span>${b.seats.join(", ")}</span></div>
+      <div class="line"><span>Name</span><span>${b.name}</span></div>
+      <div class="line"><span>Email</span><span>${b.email}</span></div>
+      <div class="line total"><span>Total</span><span>$${b.total}</span></div>
+    </div>
+  `;
 }
 
-init();
+showMovies();
 </script>
 </body>
 </html>
