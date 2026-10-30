@@ -2,11 +2,14 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
+const path = require("path");
 
 const app = express();
 app.use(express.json());
+app.use(express.static(path.join(__dirname, "public")));
 
 const PORT = process.env.PORT || 3000;
+const HOST = process.env.HOST || "0.0.0.0";
 const JWT_SECRET = process.env.JWT_SECRET || "change-this-secret";
 
 /* ------------------------------------------------------------------ */
@@ -60,6 +63,23 @@ function bookedSeats(busId, date) {
     .filter((b) => b.busId === busId && b.date === date && b.status === "CONFIRMED")
     .flatMap((b) => b.seats);
 }
+
+/* ------------------------------ Root ------------------------------- */
+app.get("/api", (req, res) => {
+  res.json({
+    message: "Bus Booking API is running",
+    endpoints: [
+      "POST   /api/auth/register",
+      "POST   /api/auth/login",
+      "GET    /api/buses?from=&to=&date=YYYY-MM-DD",
+      "GET    /api/buses/:id/seats?date=YYYY-MM-DD",
+      "POST   /api/buses            (admin)",
+      "POST   /api/bookings         (login required)",
+      "GET    /api/bookings         (login required)",
+      "DELETE /api/bookings/:id     (login required)",
+    ],
+  });
+});
 
 /* ------------------------------ Auth ------------------------------- */
 function auth(req, res, next) {
@@ -222,4 +242,4 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: "Internal server error" });
 });
 
-app.listen(PORT, () => console.log(`Bus booking API running on http://localhost:${PORT}`));
+app.listen(PORT, HOST, () => console.log(`Bus booking app running on http://${HOST}:${PORT}`));
